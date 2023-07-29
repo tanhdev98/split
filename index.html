@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split The Team</title>
+    <style>
+        .result ul li {
+            display: flex;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #sub li {
+            margin-bottom: 20px;
+        }
+
+        .delete-button {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" class="team1">
+    <input type="text" class="team2">
+    <button id="add">Add</button>
+    <div>
+        <h1>Skill</h1>
+        <ul id="sub"></ul>
+        <button id="roll">Roll</button>
+        <button id="clear">Clear</button>
+    </div>
+    <div class="result">
+        <h1>Result</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Team 1</th>
+                    <th>Team 2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="result-num"></td>
+                    <td class="result-team1"></td>
+                    <td class="result-team2"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const inputTeam1 = document.querySelector('.team1');
+        const inputTeam2 = document.querySelector('.team2');
+        const sub = document.getElementById('sub');
+        const team1 = document.querySelector('.result-team1');
+        const team2 = document.querySelector('.result-team2');
+        const num = document.querySelector('.result-num');
+        let total = 0;
+        let arr1 = [];
+        let arr2 = [];
+
+        document.getElementById('add').addEventListener('click', function () {
+            if (inputTeam1.value != '' && inputTeam2.value != '') {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${inputTeam1.value} + ${inputTeam2.value}`;
+                sub.appendChild(listItem);
+                total++;
+                arr1.push(inputTeam1.value);
+                arr2.push(inputTeam2.value);
+
+                const deleteButton = createDeleteButton();
+                deleteButton.addEventListener('click', handleDeleteButtonClick);
+                listItem.appendChild(deleteButton);
+            }
+            if (total === 5) {
+                this.disabled = true;
+            }
+
+
+        });
+
+        document.getElementById('clear').addEventListener('click', function () {
+            total = 0;
+            team1.innerHTML = '';
+            team2.innerHTML = '';
+            sub.innerHTML = '';
+            num.innerHTML = '';
+            document.getElementById('add').disabled = false;
+            arr1 = [];
+            arr2 = [];
+        });
+
+        document.getElementById('roll').addEventListener('click', function () {
+            team1.innerHTML = '';
+            team2.innerHTML = '';
+            num.innerHTML = '';
+
+            const shuffledArr1 = shuffleArray(arr1);
+            const shuffledArr2 = shuffleArray(arr2);
+
+            let new_arr = [];
+
+            for (let i = 0; i < arr1.length; i++) {
+                let randomIndex = Math.floor(Math.random() * 2);
+                new_arr.push([randomIndex === 0 ? arr1[i] : arr2[i], randomIndex === 0 ? arr2[i] : arr1[i]]);
+            }
+
+            for (let i = 0; i < new_arr.length; i++) {
+                const listItemNum = document.createElement('p');
+                const listItem1 = document.createElement('p');
+                const listItem2 = document.createElement('p');
+                listItemNum.textContent = i + 1;
+                listItem1.textContent = new_arr[i][0];
+                listItem2.textContent = new_arr[i][1];
+                num.appendChild(listItemNum);
+                team1.appendChild(listItem1);
+                team2.appendChild(listItem2);
+            }
+
+        });
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+        }
+        function createDeleteButton() {
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'x';
+            deleteButton.classList.add('delete-button');
+            return deleteButton;
+        }
+
+        function handleDeleteButtonClick(event) {
+            const listItem = event.target.parentElement;
+            const index = Array.from(sub.children).indexOf(listItem);
+            arr1.splice(index, 1);
+            arr2.splice(index, 1);
+            listItem.remove();
+            total--;
+            document.getElementById('add').disabled = false;
+        }
+
+    </script>
+</body>
+
+</html>
