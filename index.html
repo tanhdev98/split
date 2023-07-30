@@ -79,7 +79,7 @@
         document.getElementById('add').addEventListener('click', function () {
             if (inputTeam1.value != '' && inputTeam2.value != '') {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${inputTeam1.value} + ${inputTeam2.value}`;
+                listItem.textContent = `${inputTeam1.value} = ${inputTeam2.value}`;
                 sub.appendChild(listItem);
                 total++;
                 arr1.push(inputTeam1.value);
